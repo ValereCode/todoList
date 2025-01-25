@@ -13,4 +13,4 @@ class Task(Document):
     updated_date: str = Field(alias="updatedDate")
 
     class Settings:
-        collection = "Task"
+        collection = "tasks"
