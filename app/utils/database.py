@@ -1,14 +1,10 @@
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
-from dotenv import  load_dotenv
-import os
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from ..models.task_model import Task
 
-load_dotenv()
 
 @asynccontextmanager
 async def connect_database(app: FastAPI):
@@ -40,14 +36,3 @@ async def connect_database(app: FastAPI):
 
     yield
 
-app = FastAPI(lifespan=connect_database,docs_url="/")
-
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
