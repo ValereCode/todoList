@@ -1,6 +1,6 @@
 # Purpose: Define the routes for the Task model
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.models.task_model import Task
 
 
@@ -23,7 +23,13 @@ async def root():
 
 @router.get("", response_model=list[Task])
 async def get_tasks():
-    return await Task.find().to_list()
+    try:
+        tasks = await Task.find().to_list()
+        print("Tasks fetched successfully:", tasks)
+        return tasks
+    except Exception as e:
+        print("Error fetching tasks:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("", response_model=Task)

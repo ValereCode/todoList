@@ -12,22 +12,19 @@ load_dotenv()
 
 @asynccontextmanager
 async def connect_database(app: FastAPI):
-    print(settings.database_url)
-    # Create Motor client
-    client = AsyncIOMotorClient(settings.database_url)
-    # ****************************************************#
-    ping_response = await client.elom_shop.command("ping")
-    if int(ping_response["ok"]) != 1:
-        raise Exception("Problem connecting to database cluster.")
-    else:
-        print("Connected to database cluster.")
-    # ****************************************************#
-    # Initialize beanie with documents classes and a database
-    await init_beanie(
-        database=client.elom_shop,
-        document_models=[Task]
-    )
-    print("Startup complete")
+    print("DATABASE_URL:", settings.database_url)  # Vérifie si la variable est bien chargée
+
+    try:
+        client = AsyncIOMotorClient(settings.database_url)
+        db = client.get_database()
+        ping_response = await db.command("ping")  # Vérifie si MongoDB répond
+        print("MongoDB Ping Response:", ping_response)
+    except Exception as e:
+        print("Error connecting to MongoDB:", str(e))
+        raise Exception("Failed to connect to MongoDB")
+
+    await init_beanie(database=client["elom_shop"], document_models=[Task])
+    print("Beanie initialized successfully")
     yield
     print("Shutdown complete")
 
