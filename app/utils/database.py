@@ -12,6 +12,7 @@ load_dotenv()
 
 @asynccontextmanager
 async def connect_database(app: FastAPI):
+    print(settings.database_url)
     # Create Motor client
     client = AsyncIOMotorClient(settings.database_url)
     # ****************************************************#
