@@ -25,7 +25,6 @@ async def root():
 async def get_tasks():
     try:
         tasks = await Task.find().to_list()
-        print("Tasks fetched successfully:", tasks)
         return tasks
     except Exception as e:
         error_message = traceback.format_exc()  # Capture l'erreur complète

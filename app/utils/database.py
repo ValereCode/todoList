@@ -8,7 +8,6 @@ from ..models.task_model import Task
 
 @asynccontextmanager
 async def connect_database(app: FastAPI):
-    print("DATABASE_URL:", settings.database_url)  # Vérifie la variable d'env
 
     try:
         client = AsyncIOMotorClient(settings.database_url)
@@ -17,12 +16,6 @@ async def connect_database(app: FastAPI):
         # Test de connexion
         ping_response = await db.command("ping")
         print("✅ MongoDB connecté :", ping_response)
-
-        # Vérifier si la collection "tasks" existe
-        collection_names = await db.list_collection_names()
-        print("Collections existantes :", collection_names)
-        if "tasks" not in collection_names:
-            print("⚠️ Collection 'tasks' non trouvée, elle sera créée à la première insertion.")
 
         # Initialiser Beanie
         await init_beanie(database=db, document_models=[Task])
